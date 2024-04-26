@@ -36,3 +36,7 @@ Type y for all the prompts
   `npm run dev`
 
 Go to localhost:5783 in your browser to access the website.
+
+# How to run with docker:
+`docker build -t <image-name>:<version>`
+`docker run -p 80:80 <image-name>`
