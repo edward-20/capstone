@@ -14,7 +14,7 @@ const ItemAmount: React.FC<ItemAmountProps> =({ amount, onChange })=> {
         value: amount,
         min: 0,
         max: 6,
-        onChange: (valueString, valueNumber) => onChange(valueNumber),
+        onChange: (valueString) => onChange(Number(valueString)),
       })
   
     const inc = getIncrementButtonProps()

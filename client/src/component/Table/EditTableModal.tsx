@@ -31,13 +31,17 @@ interface MyModalProps {
   minutes: number,
 }
 
-// api fetches
-const token = localStorage.getItem('token');
 
 const MyModal = ({ isOpen, closeModal, uniqueKey, pk, name, description, price, isManager, dietaryRequirement, isPopular, minutes}: MyModalProps) => {
   const { refresh, setRefresh } = useContext(SearchContext);
   
   const [amount, setAmount] = useState<number>(1);
+
+  const [token, setToken] = useState<undefined|string | null>();
+
+  useEffect(() => {
+    setToken(localStorage.getItem('token'));
+  }, [])
   
   let addToCart: (arg0: { uniqueKey: number; pk:number; name: string; price: number; amount: number; }) => void;
 
@@ -46,16 +50,17 @@ const MyModal = ({ isOpen, closeModal, uniqueKey, pk, name, description, price, 
   }
 
   const deleteMenuItemApi = async () => {
-    if (token === null) {
+    if (token === null || token === undefined) {
       console.log('fail to add category menu');
       throw new Error('Token is invalid!');
-    }
-    try {
-      await deleteMenuItem(token, pk);
-      console.log('delete working')
-      setRefresh(!refresh);
-    } catch (error) {
-      console.log(error);
+    } else {
+      try {
+        await deleteMenuItem(token, pk);
+        console.log('delete working')
+        setRefresh(!refresh);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -83,28 +88,29 @@ const MyModal = ({ isOpen, closeModal, uniqueKey, pk, name, description, price, 
   ]
 
   const editMenuItemApi = async () => {
-    if (token === null) {
+    if (token === null || token === undefined) {
       console.log('fail to add category menu');
       throw new Error('Token is invalid!');
-    }
-    try {
-      const response = await patchMenuItem (token, pk, 
-        // update details
-        {
-          name: menuName,
-          description: menuDescription,
-          price: menuPrice.toString(),
-          categoryId: uniqueKey, // category pk
-          dietary_requirements: (menuDR as undefined | "DF" | "GF" | "V" | "VG"),
-          preparation_time: menuPrepTime,
-          popular: menuPopular
-        }
-      );
-      console.log(response);
-      setRefresh(!refresh);
-    } catch (error) {
-      console.log(error);
-      throw new Error('Edit Menu Item Failed');
+    } else {
+      try {
+        const response = await patchMenuItem (token, pk, 
+          // update details
+          {
+            name: menuName,
+            description: menuDescription,
+            price: menuPrice.toString(),
+            categoryId: uniqueKey, // category pk
+            dietary_requirements: (menuDR as undefined | "DF" | "GF" | "V" | "VG"),
+            preparation_time: menuPrepTime,
+            popular: menuPopular
+          }
+        );
+        console.log(response);
+        setRefresh(!refresh);
+      } catch (error) {
+        console.log(error);
+        throw new Error('Edit Menu Item Failed');
+      }
     }
   }
   
@@ -128,7 +134,10 @@ const MyModal = ({ isOpen, closeModal, uniqueKey, pk, name, description, price, 
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [menuName, setMenuName] = useState<string>(name);
-  const [menuDescription, setMenuDescription] = useState<string>(description);
+  const [menuDescription, setMenuDescription] = useState<string|undefined>();
+  useEffect(() => {
+    setMenuDescription(description)
+  }, [])
   const [menuPrice, setMenuPrice] = useState<number>(price);
   const [menuPrepTime, setMenuPrepTime] = useState<number>(minutes);
   const [menuPopular, setMenuPopular] = useState<boolean>(isPopular);
@@ -137,10 +146,6 @@ const MyModal = ({ isOpen, closeModal, uniqueKey, pk, name, description, price, 
   const handleMenuNameChange = (e: React.ChangeEvent<HTMLInputElement>) => (
     setMenuName(e.target.value)
   )
-
-  const handleMenuDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMenuDescription(e.target.value);
-  }
 
   const handleMenuPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => (
     setMenuPrice(Number(e.target.value))
