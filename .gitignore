@@ -8,5 +8,7 @@ project-backend/WMS/WMS/__pycache__
 project-backend/WMS/WMS_MAIN/__pycache__
 project-backend/WMS/WMS_MAIN/static/menu_images
 project-backend/WMS/WMS/.env
+project-backend/venv
+project-backend/.venv
 .env
 project-backend/WMS/WMS_MAIN/static/menu_images/*
