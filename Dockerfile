@@ -9,7 +9,6 @@ RUN npm install
 # copy the source code
 COPY ./client/ ./
 # Build the static files
-RUN ls src
 RUN npm run build
 
 # Production Stage
