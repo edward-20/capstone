@@ -28,6 +28,7 @@ MEDIA_URL = '/media/'
 env_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(env_path)
 SECRET_KEY = os.getenv("SECRET_KEY")
+DB_PASSWORD = os.getenv("PGPASSWORD")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -115,8 +116,12 @@ WSGI_APPLICATION = 'WMS.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': DB_PASSWORD,
+        'HOST': 'roundhouse.proxy.rlwy.net',
+        'PORT': '17013'
     }
 }
 
